@@ -16,19 +16,13 @@ def user_difficulty():
 
     return user_level
 
-
-# If user_level = 1, X and Y should be 1 digit, non-negative, (0 - 9).
-# If user_level = 2, X and Y should be 2 digit, non-negative, (10 - 99).
-# If user_level = 3, X and Y should be 3 digit, non-negative, (100 - 999).
-
-
 # Function for number of questions
 def user_questions():
     while True:
         try:
             # Prompt the user for number of questions to ask "Enter number of questions to ask: 3 to 10:". If input not <3 or > 10, prompt again.
             number_of_questions = int(input("Enter number of questions to ask: 3 - 10: "))
-            if number_of_questions < 3 or number_of_questions > 10:
+            if number_of_questions < 3 and number_of_questions > 10:
                 print("ERROR: Please enter a number between 3 - 10")
                 continue
             break
@@ -37,10 +31,15 @@ def user_questions():
     return number_of_questions
 
 
+# If user_level = 1, X and Y should be 1 digit, non-negative, (0 - 9).
+# If user_level = 2, X and Y should be 2 digit, non-negative, (10 - 99).
+# If user_level = 3, X and Y should be 3 digit, non-negative, (100 - 999).
 def main():
     random_generator = random.Random()
     number_of_questions = user_questions()
     user_difficulty_level = user_difficulty()
+    number_of_tries = 3
+    number_of_correct_answers = 0
     for question_number in range(number_of_questions):
         if user_difficulty_level == 1:
             X = random_generator.randint(0, 9)
@@ -52,34 +51,35 @@ def main():
             X = random_generator.randint(100, 999)
             Y = random_generator.randint(100, 999)
 
+        # prompt the user to solve each problem.
         right_answer = X + Y
-        (user_input) = input(f"{X} + {Y} = ")
-        user_input = int(user_input)
-        if user_input == right_answer:
-            print("CORRECT!!")
-        else:
-            print("WRONG!!")
-
         
-    
+        while True:
+            try:
+                user_input = int(input(f"{X} + {Y} = "))
+                # If answer is correct, output CORRECT!!! prompt user to answer next question.
+                if user_input == right_answer:
+                    print("CORRECT!!\n")
+                    number_of_correct_answers = number_of_correct_answers + 1
+                    break
+                else:
+                    print("WRONG!!\n")
+                    number_of_tries = number_of_tries - 1
+            except:
+                # If answer is not correct, output WRONG!!! prompt the user again, user has three tries in total to answer the question.
+                print("WRONG!!\n")
+                number_of_tries = number_of_tries - 1
 
-
-user_difficulty()
-user_questions()
+            # If input not correct after three tries, output correct answer, prompt the user to answer the next question.
+            if number_of_tries == 0:
+                print(f"\nCorrect Answer: {X} + {Y} = {right_answer}")
+                break 
+    grade = number_of_correct_answers / number_of_questions
+    user_score = grade * 100
+    print(f"You got {number_of_correct_answers} out of {number_of_questions} questions correct: {user_score}% ")
 main()
+ 
 
-
-# randomly generate the number of questions the user entered. Problems should be formatted as X + Y = , X and Y is a non-negative integer with difficulty level of digits. 
-
-
-# only use addition
-
-# prompt the user to solve each problem.
-
-# If answer is correct, output CORRECT!!! prompt user to answer next question.
-
-# If answer is not correct (or not even a number), output WRONG!!! prompt the user again, user has three tries in total to answer the question. 
-# If input not correct after three tries, output correct answer, prompt the user to answer the next question.
 
 # The program should output user score and the percentage (formatted to 2 decimal places) correct.
 
